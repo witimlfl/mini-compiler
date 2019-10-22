@@ -62,8 +62,7 @@ function tokenizer(input) {
 		
 		throw new TypeError(`I dont know what this character is: ${char}`);
 	}
-	
-	console.log('tokenizer:', input, tokens);
+	// console.log('tokens -->', tokens);
 	return tokens;
 }
 module.exports = tokenizer;
