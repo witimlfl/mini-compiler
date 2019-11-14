@@ -235,6 +235,8 @@ function transform(ast) {
         type: 'Program',
         body: []
     };
+    // 父结点上使用一个属性 `context`（上下文）， 可以把结点放入他们父结点的 context 中
+    // 注意 context 是一个*引用*，从旧的 AST 到新的 AST。
     ast._context = newAst.body;
     traverser(ast, nodeVistor);
     return newAst;
@@ -273,7 +275,10 @@ function traverser(ast, visitor) {
 
 }
 
-// 新ast 生成目标代码
+/**
+ * generator 代码生成器:
+ * 代码生成器会递归地调用它自己，把 AST 中的每个结点打印到一个很大的字符串中。
+ * */
 function generator(node) {
     switch (node.type) {
         case 'Program':
@@ -293,6 +298,14 @@ function generator(node) {
 
 }
 
+/**
+ * compiler 函数，它只是把上面说到的那些函数连接到一起。
+ *
+ *   1. input  => tokenizer   => tokens
+ *   2. tokens => parser      => ast
+ *   3. ast    => transformer => newAst
+ *   4. newAst => generator   => output
+ */
 function compiler(input) {
 	const tokens = tokenizer(input);
 	const ast = parser(tokens);
@@ -304,12 +317,12 @@ function compiler(input) {
 module.exports = compiler
 
 
-// const input = "`I am ${ name } from China`"
-// const tokens = tokenizer(input);
+const input = "`I am ${ name } from China`"
+const tokens = tokenizer(input);
 // const ast = parser(tokens);
 // const newAst = transform(ast);
 // const output  = generator(newAst);
-// console.log('--------------tokens ----->', tokens);
+console.log('--------------tokens ----->', tokens);
 // console.log('--------------ast ----->', JSON.stringify(ast));
 // console.log('---------------newAst ----->', JSON.stringify(newAst));
 // console.log('----------------output ----->', output);
